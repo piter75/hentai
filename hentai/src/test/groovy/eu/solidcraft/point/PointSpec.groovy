@@ -1,7 +1,7 @@
 package eu.solidcraft.point
 
 import eu.solidcraft.film.dto.FilmTypeDto
-import eu.solidcraft.rent.dto.MovieWasRented
+import eu.solidcraft.rentals.dto.FilmWasRented
 import spock.lang.Specification
 
 class PointSpec extends Specification {
@@ -15,21 +15,21 @@ class PointSpec extends Specification {
             userPoints.number == 0
 
         and:
-            facade.movieWasRented(new MovieWasRented(userId, FilmTypeDto.NEW))
+            facade.movieWasRented(new FilmWasRented(userId, FilmTypeDto.NEW))
         when:
             userPoints = facade.list(userId)
         then:
             userPoints.number == 2
 
         and:
-            facade.movieWasRented(new MovieWasRented(userId, FilmTypeDto.REGULAR))
+            facade.movieWasRented(new FilmWasRented(userId, FilmTypeDto.REGULAR))
         when:
             userPoints = facade.list(userId)
         then:
             userPoints.number == 3
 
         and:
-            facade.movieWasRented(new MovieWasRented(userId, FilmTypeDto.OLD))
+            facade.movieWasRented(new FilmWasRented(userId, FilmTypeDto.OLD))
         when:
             userPoints = facade.list(userId)
         then:

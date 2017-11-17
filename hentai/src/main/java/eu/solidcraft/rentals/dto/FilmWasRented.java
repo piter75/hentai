@@ -1,10 +1,10 @@
-package eu.solidcraft.rent.dto;
+package eu.solidcraft.rentals.dto;
 
 import eu.solidcraft.film.dto.FilmTypeDto;
 import lombok.Value;
 
 @Value
-public class MovieWasRented {
+public class FilmWasRented {
     int userId;
     FilmTypeDto filmType;
 }

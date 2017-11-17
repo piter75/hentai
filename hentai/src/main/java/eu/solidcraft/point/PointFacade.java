@@ -1,7 +1,7 @@
 package eu.solidcraft.point;
 
 import eu.solidcraft.point.dto.PointDto;
-import eu.solidcraft.rent.dto.MovieWasRented;
+import eu.solidcraft.rentals.dto.FilmWasRented;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -12,10 +12,10 @@ public class PointFacade {
         return new PointDto(repository.find(userId));
     }
 
-    public void movieWasRented(MovieWasRented movieWasRented) {
-        MovieTypePoints pointsForMovie = MovieTypePoints.valueOf(movieWasRented.getFilmType().name());
+    public void movieWasRented(FilmWasRented filmWasRented) {
+        MovieTypePoints pointsForMovie = MovieTypePoints.valueOf(filmWasRented.getFilmType().name());
 
-        repository.addUserPoints(movieWasRented.getUserId(), pointsForMovie.points);
+        repository.addUserPoints(filmWasRented.getUserId(), pointsForMovie.points);
     }
 }
 
