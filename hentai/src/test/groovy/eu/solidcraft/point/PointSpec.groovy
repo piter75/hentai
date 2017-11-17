@@ -1,11 +1,13 @@
 package eu.solidcraft.point
 
+import eu.solidcraft.base.FilmCreator
 import eu.solidcraft.film.dto.FilmTypeDto
 import eu.solidcraft.rentals.dto.FilmWasRented
 import spock.lang.Specification
 
 class PointSpec extends Specification {
     PointFacade facade = new PointConfiguration().testPointFacade()
+
     int userId = 1
 
     def "list should list user points"() {
@@ -15,21 +17,21 @@ class PointSpec extends Specification {
             userPoints.number == 0
 
         and:
-            facade.movieWasRented(new FilmWasRented(userId, FilmTypeDto.NEW))
+            facade.movieWasRented(new FilmWasRented(userId, FilmCreator.randomFilmWithType(FilmTypeDto.NEW)))
         when:
             userPoints = facade.list(userId)
         then:
             userPoints.number == 2
 
         and:
-            facade.movieWasRented(new FilmWasRented(userId, FilmTypeDto.REGULAR))
+            facade.movieWasRented(new FilmWasRented(userId, FilmCreator.randomFilmWithType(FilmTypeDto.REGULAR)))
         when:
             userPoints = facade.list(userId)
         then:
             userPoints.number == 3
 
         and:
-            facade.movieWasRented(new FilmWasRented(userId, FilmTypeDto.OLD))
+            facade.movieWasRented(new FilmWasRented(userId, FilmCreator.randomFilmWithType(FilmTypeDto.OLD)))
         when:
             userPoints = facade.list(userId)
         then:

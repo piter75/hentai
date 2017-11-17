@@ -26,34 +26,34 @@ class RentalsSpec extends Specification {
 
     def "cannot rent not existing movie"() {
         given:
-        filmFacade.show(notExistingMovieTitle) >> { throw new RuntimeException("Film not found") }
+            filmFacade.show(notExistingMovieTitle) >> { throw new RuntimeException("Film not found") }
 
         when:
-        RentalResultDto rentalResult = rentalFacade.rentMovie(userId, new RentFilmRequest(notExistingMovieTitle, 1))
+            RentalResultDto rentalResult = rentalFacade.rentMovie(userId, new RentFilmRequest(notExistingMovieTitle, 1))
 
         then:
-        rentalResult.rentalResultStatus == RentalResultStatus.FAILURE
+            rentalResult.rentalResultStatus == RentalResultStatus.FAILURE
     }
 
     def "should list rented movies"() {
         given:
-        filmFacade.show(film.title) >> film
-        filmFacade.show(film2.title) >> film2
-        rentalFacade.rentMovie(userId, new RentFilmRequest(film.title, 1))
-        rentalFacade.rentMovie(userId, new RentFilmRequest(film2.title, 2))
+            filmFacade.show(film.title) >> film
+            filmFacade.show(film2.title) >> film2
+            rentalFacade.rentMovie(userId, new RentFilmRequest(film.title, 1))
+            rentalFacade.rentMovie(userId, new RentFilmRequest(film2.title, 2))
 
         when:
-        UserRentedFilmsDto userRentedFilms = rentalFacade.list(userId)
+            UserRentedFilmsDto userRentedFilms = rentalFacade.list(userId)
 
         then:
-        userRentedFilms.rentedFilms*.title as Set == [rentedFilm, rentedFilm2]*.title as Set
+            userRentedFilms.rentedFilms*.title as Set == [rentedFilm, rentedFilm2]*.title as Set
     }
 
     def "renting film should publish event"() {
         when:
-        filmFacade.show(film.title) >> film
-        rentalFacade.rentMovie(userId, new RentFilmRequest(film.title, 1))
+            filmFacade.show(film.title) >> film
+            rentalFacade.rentMovie(userId, new RentFilmRequest(film.title, 1))
         then:
-            1 * eventPublisher.filmWasRented(new FilmWasRented(userId, film.type))
+            1 * eventPublisher.filmWasRented(new FilmWasRented(userId, new FilmDto(film.title, film.type)))
     }
 }

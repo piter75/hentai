@@ -27,7 +27,7 @@ public class RentalsFacade {
             ZonedDateTime rentingDate = ZonedDateTime.now();
             userFilms.rent(filmToRent.getTitle(), rentingDate, calculateReturnDate(rentingDate, rentMovieRequest.getRentDays()));
             rentalsRepository.save(userFilms);
-            rentalsEventPublisher.filmWasRented(new FilmWasRented(userId, filmToRent.getType()));
+            rentalsEventPublisher.filmWasRented(new FilmWasRented(userId, filmToRent));
             return new RentalResultDto(RentalResultStatus.SUCCESS, "");
         } catch (Exception e) {
             return new RentalResultDto(RentalResultStatus.FAILURE, e.getMessage());

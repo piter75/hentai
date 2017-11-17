@@ -13,7 +13,7 @@ public class PointFacade {
     }
 
     public void movieWasRented(FilmWasRented filmWasRented) {
-        MovieTypePoints pointsForMovie = MovieTypePoints.valueOf(filmWasRented.getFilmType().name());
+        MovieTypePoints pointsForMovie = MovieTypePoints.valueOf(filmWasRented.getFilm().getType().name());
 
         repository.addUserPoints(filmWasRented.getUserId(), pointsForMovie.points);
     }
