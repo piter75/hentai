@@ -3,6 +3,7 @@ package eu.solidcraft.rentals
 import eu.solidcraft.film.domain.FilmFacade
 import eu.solidcraft.film.dto.FilmDto
 import eu.solidcraft.film.dto.FilmTypeDto
+import eu.solidcraft.rentals.dto.FilmWasRented
 import eu.solidcraft.rentals.dto.RentFilmRequest
 import eu.solidcraft.rentals.dto.RentalResultDto
 import eu.solidcraft.rentals.dto.RentalResultStatus
@@ -14,7 +15,8 @@ import java.time.ZonedDateTime
 
 class RentalsSpec extends Specification {
     def filmFacade = Mock(FilmFacade)
-    def rentalFacade = new RentalsConfiguration().rentalsFacade(filmFacade, new InMemoryRentalsRepository())
+    def eventPublisher = Mock(RentalsEventPublisher)
+    def rentalFacade = new RentalsConfiguration().rentalsFacade(filmFacade, new InMemoryRentalsRepository(), eventPublisher)
     def film = new FilmDto("First film ever", FilmTypeDto.NEW)
     def film2 = new FilmDto("Some great fantasy movie", FilmTypeDto.NEW)
     def userId = 1
@@ -45,5 +47,13 @@ class RentalsSpec extends Specification {
 
         then:
         userRentedFilms.rentedFilms*.title as Set == [rentedFilm, rentedFilm2]*.title as Set
+    }
+
+    def "renting film should publish event"() {
+        when:
+        filmFacade.show(film.title) >> film
+        rentalFacade.rentMovie(userId, new RentFilmRequest(film.title, 1))
+        then:
+            1 * eventPublisher.filmWasRented(new FilmWasRented(userId, film.type))
     }
 }

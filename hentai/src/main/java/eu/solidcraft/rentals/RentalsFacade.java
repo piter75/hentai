@@ -2,10 +2,7 @@ package eu.solidcraft.rentals;
 
 import eu.solidcraft.film.domain.FilmFacade;
 import eu.solidcraft.film.dto.FilmDto;
-import eu.solidcraft.rentals.dto.RentFilmRequest;
-import eu.solidcraft.rentals.dto.RentalResultDto;
-import eu.solidcraft.rentals.dto.RentalResultStatus;
-import eu.solidcraft.rentals.dto.UserRentedFilmsDto;
+import eu.solidcraft.rentals.dto.*;
 import lombok.AllArgsConstructor;
 
 import java.time.ZonedDateTime;
@@ -15,6 +12,7 @@ public class RentalsFacade {
 
     private final FilmFacade filmFacade;
     private RentalsRepository rentalsRepository;
+    private RentalsEventPublisher rentalsEventPublisher;
 
     public UserRentedFilmsDto list(int userId) {
         UserRentedFilms userFilms = rentalsRepository.findFor(userId);
@@ -29,6 +27,7 @@ public class RentalsFacade {
             ZonedDateTime rentingDate = ZonedDateTime.now();
             userFilms.rent(filmToRent.getTitle(), rentingDate, calculateReturnDate(rentingDate, rentMovieRequest.getRentDays()));
             rentalsRepository.save(userFilms);
+            rentalsEventPublisher.filmWasRented(new FilmWasRented(userId, filmToRent.getType()));
             return new RentalResultDto(RentalResultStatus.SUCCESS, "");
         } catch (Exception e) {
             return new RentalResultDto(RentalResultStatus.FAILURE, e.getMessage());

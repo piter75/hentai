@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 public class RentalsConfiguration {
 
     @Bean
-    public RentalsFacade rentalsFacade(FilmFacade filmFacade, RentalsRepository rentalsRepository) {
-        return new RentalsFacade(filmFacade, rentalsRepository);
+    public RentalsFacade rentalsFacade(FilmFacade filmFacade, RentalsRepository rentalsRepository, RentalsEventPublisher eventPublisher) {
+        return new RentalsFacade(filmFacade, rentalsRepository, eventPublisher);
     }
 }
